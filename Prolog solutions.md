@@ -379,6 +379,51 @@ is_integer(N) :- is_integer(Nl), N is Nl + 1.
 ```
 The program uses the predicate `intriple/3` to generate possible triples of integers X, Y, Z. It then checks to see whether this triple really is a Pythagorean triple. The definition of `intriple/3` has to guarantee that all triples of integers will eventually be generated. It first of all generates an integer that is the sum of `X`, `Y` and `Z`. Then it uses a non-deterministic subtraction predicate, minus, to generate values of `X`, `Y` and `Z` from that.
 
+## Exercise 8.1
+A cut goal can be handled by not backtracking and not *REDO*-ing goals that occur before the cut. Instead, the trace just ends.
+
+For example, if we simplify the definition of `descendant/2` to just
+```
+descendant(X, Y) :- offspring(X, Y).
+```
+then the full trace of 
+```
+?- descendant(abraham, Answer), fail.
+```
+is
+```
+[1] CALL: descendant(abraham, Answer)
+[2] CALL: offspring(abraham, Answer)
+[2] EXIT: offspring(abraham, ishmael)
+[1] EXIT: descendant(abraham, ishmael)
+[3] CALL: fail
+[3] FAIL: fail
+[1] REDO: descendant(abraham, ishmael)
+[2] REDO: offspring(abraham, ishmael)
+[2] EXIT: offspring(abraham, isaac)
+[1] EXIT: descendant(abraham, isacc)
+[4] CALL: fail
+[4] FAIL: fail
+
+false.
+```
+
+And the full trace of
+```
+?- descendant(abraham, Answer), !, fail.
+```
+is
+```
+[1] CALL: descendant(abraham, Answer)
+[2] CALL: offspring(abraham, Answer)
+[2] EXIT: offspring(abraham, ishmael)
+[1] EXIT: descendant(abraham, ishmael)
+[3] CALL: fail
+[3] FAIL: fail
+
+false.
+```
+
 ## Exercise 9.1
 *in back of book*
 
